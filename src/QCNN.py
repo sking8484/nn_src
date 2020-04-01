@@ -113,28 +113,16 @@ class NeuralNetwork:
 
     def train(self,inputs,targets,epoch):
 
-
-
-
         outputs = self.feed_forward(inputs)
         targets = np.array(targets,ndmin=2).T
-
-
         output_errors = (targets-outputs)
-
         self.individual_epoch_errors.append(np.linalg.norm(output_errors))
 
         if self.original_epoch != epoch:
-            #print(np.mean(self.individual_epoch_errors))
+
             self.mean_errors.append(1-np.mean(self.individual_epoch_errors*1))
             self.individual_epoch_errors = []
             self.original_epoch +=1
-
-            #plt.plot(self.mean_errors)
-
-
-
-
 
 
         for layer in range(self.layers-1,-1,-1):
@@ -152,8 +140,8 @@ class NeuralNetwork:
                     gradient = np.ones(np.shape(self.ff['z'+str(self.layers-1)]))
 
                 gradient = np.multiply(output_errors,gradient)
-                if np.linalg.norm(gradient)>10:
-                    gradient = 10*(gradient/np.linalg.norm(gradient))
+                # if np.linalg.norm(gradient)>10:
+                #     gradient = 10*(gradient/np.linalg.norm(gradient))
                 first_errors = gradient
                 gradient = self.lr*gradient
 
@@ -170,8 +158,8 @@ class NeuralNetwork:
                 first_errors = np.transpose(self.iw[layer+1])@first_errors
                 gradient = self.dsigmoid(self.ff['z'+str(layer)])
                 gradient = np.multiply(first_errors,gradient)
-                if np.linalg.norm(gradient)>10:
-                    gradient = 10*(gradient/np.linalg.norm(gradient))
+                # if np.linalg.norm(gradient)>10:
+                #     gradient = 10*(gradient/np.linalg.norm(gradient))
                 first_errors = gradient
                 gradient = self.lr*gradient
 
@@ -190,8 +178,8 @@ class NeuralNetwork:
                 gradient = self.dsigmoid(self.ff['z'+str(layer)])
 
                 gradient = np.multiply(first_errors,gradient)
-                if np.linalg.norm(gradient)>10:
-                    gradient = 10*(gradient/np.linalg.norm(gradient))
+                # if np.linalg.norm(gradient)>10:
+                #     gradient = 10*(gradient/np.linalg.norm(gradient))
                 first_errors = gradient
 
                 gradient = self.lr*gradient
