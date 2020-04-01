@@ -12,11 +12,12 @@ The call to test is class_.feed_forward(input)
 
 #Installation
 
-"""
+```
 pip install QCNN
-"""
+```
 
 #Sample Code
+```
 
 from NeuralNetwork import NeuralNetwork
 import pandas as pd
@@ -86,3 +87,4 @@ plt.plot(correct,label='Actual')
 plt.legend()
 
 plt.show()
+```
