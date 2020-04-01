@@ -19,7 +19,7 @@ pip install QCNN
 #Sample Code
 ```
 
-from NeuralNetwork import NeuralNetwork
+from QCNN import NeuralNetwork
 import pandas as pd
 import numpy as np
 
