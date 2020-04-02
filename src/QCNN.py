@@ -6,7 +6,20 @@ import matplotlib.pyplot as plt
 
 
 class NeuralNetwork:
-    def __init__(self, inputnotes,hiddennodes,layers,outputnodes,learningrate,number_of_epochs,output_type):
+    def __init__(self, inputnotes,hiddennodes,layers,outputnodes,learningrate,number_of_epochs=1000,output_type = 'c',train_test_split = 0.8,test = True, split = True):
+        """
+        inputnodes
+        hiddennodes
+        layers
+        outputnodes
+        learningrate
+        number_of_epochs=1000
+        output_type = 'c' (choice between c for classification and r for regression)
+        train_test_split = 0.8 (percentage you would like to train)
+        test = True (turn if off if you don't want to test)
+        split = True (split the data)
+
+        """
         self.inodes = inputnotes
         self.hnodes = hiddennodes
         self.layers = layers
@@ -17,6 +30,9 @@ class NeuralNetwork:
         self.mean_errors = []
         self.original_epoch=0
         self.output_type = output_type
+        self.tts = train_test_split
+        self.test = test
+        self.split = split
 
 
         """Initialize the weights and the biases"""
@@ -116,17 +132,46 @@ class NeuralNetwork:
 
     def clean_data(func):
         def wrapper(*args, **kwargs):
+            test_outcomes = []
+            test_answers = []
 
             self = args[0]
             data = args[1]
+
+            train_data = data.iloc[:int(len(data)*(self.tts))].sample(frac=1)
+            print(train_data)
+            test_data = data.iloc[int(len(data)*self.tts):]
+
+            if not self.split:
+                test_data = data.iloc[:int(len(data)*self.tts)]
+
+
+            train_inputs = train_data[data.columns[:-1]].values
+            train_outputs = train_data[data.columns[-1]].values
+
+            test_inputs = test_data[data.columns[:-1]].values
+            test_outputs = test_data[data.columns[-1]].values
+
+
+
             for epoch in range(self.epochs):
-                inputs = data[data.columns[:-1]].values
-                outputs = data[data.columns[-1]].values
-                for i in range(len(inputs)):
-                    func(args[0],inputs[i],outputs[i],epoch)
+                for i in range(len(train_inputs)):
+                    func(args[0],train_inputs[i],train_outputs[i],epoch)
             plt.plot(self.mean_errors)
             plt.show()
-            return
+            if not self.test:
+                return
+            else:
+                for index,point in enumerate(test_inputs):
+                    print(point)
+                    print(self.feed_forward(point))
+                    test_outcomes.append(self.feed_forward(point)[0])
+                    test_answers.append(test_outputs[index])
+                plt.plot(test_outcomes,'*', label = 'test')
+                plt.plot(test_answers,'*',label = 'answer')
+                plt.legend()
+                plt.show()
+                return
 
         return wrapper
 
