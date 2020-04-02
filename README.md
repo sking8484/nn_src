@@ -4,9 +4,16 @@ Quantcore's implementation of a deep neural network. Used for classification and
 
 #Usage
 
-The class takes six requirements, # input nodes,  # hidden nodes, # layers, # output nodes, #learning rate, output type (specificed with r for regression, c for classification)
+The class takes a few requirements, # input nodes,  # hidden nodes, # layers, # output nodes, # learning rate, # number of epochs, # output type (specified with r for regression, c for classification), # train test split = 0.8 (percentage you would like to train on), # test = True (turn it off if you don't want to test), split = True (turn it off if you don't want the data split)
 
-The call to train the function is class_.train(input,answer)
+The train function takes one input, which is a DATAFRAME with the inputs and the outputs on the right side, e.g.
+```
+inputs = dataframe[:-1]
+outputs = dataframe[-1]
+```
+Do not separate inputs from outputs, just have the outputs as the righter most column in your df
+
+The call to train the function is class_.train(input)
 
 The call to test is class_.feed_forward(input)
 
@@ -21,70 +28,20 @@ pip install QCNN
 
 from QCNN import NeuralNetwork
 import pandas as pd
-import numpy as np
-
-data = []
-x = np.linspace(-1,1,401)
-y = np.sin(4*x)
-for point in range(len(x)):
-    data.append([x[point],y[point]])
 
 
-def shuffle_data():
-    train_data = data[:-50]
-    test_data = data
-    np.random.shuffle(train_data)
-    train_data = pd.DataFrame(train_data)
-    test_data = pd.DataFrame(test_data)
+nn= NeuralNetwork(2,2,3,1,.1,100000, train_test_split =1, split=False)
 
-    train_inputs = train_data[train_data.columns[0]].values
-    train_answers = train_data[train_data.columns[1]].values
-    test_inputs = test_data[test_data.columns[0]].values
-    test_answers = test_data[test_data.columns[1]].values
+data_dict = {0:{'input1':0,'input2':0,'output':0},
+            1:{'input1':1,'input2':0,'output':1},
+            2:{'input1':0,'input2':1,'output':1},
+            3:{'input1':1,'input2':1,'output':0}
+            }
 
-    return train_inputs,train_answers,test_inputs,test_answers
+df = pd.DataFrame.from_dict(data_dict, orient = 'index')
 
 
 
+nn.train(df)
 
-
-
-nn = NeuralNetwork(2,2,2,3,.001,'r')
-
-
-
-for epoch in range(1000):
-    if epoch %10 ==0:
-        print(epoch/100)
-    normalized_data,inputs,test_data,testing_inputs = shuffle_data()
-
-
-    for i in range(int(len(normalized_data)/10)):
-
-        nn.train(list(normalized_data.iloc[i]),inputs[i],epoch)
-
-num_correct = 0
-points = []
-correct = []
-for test in range(len(test_data)):
-    #inputs = test_data[test]
-    nn_output = nn.feed_forward(list(test_data.iloc[test]))
-    points.append(nn_output[0])
-    output = np.argmax(nn_output)
-    ti = testing_inputs[test]
-
-    correct.append(ti)
-
-
-    answer = np.argmax(ti)
-
-    if output == answer:
-        num_correct+= 1
-
-print(num_correct/len(testing_inputs))
-plt.plot(points,label='Prediction')
-plt.plot(correct,label='Actual')
-plt.legend()
-
-plt.show()
 ```
