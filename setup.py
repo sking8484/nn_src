@@ -5,7 +5,7 @@ with open('README.md', 'r') as file:
 
 
 setup(
-    name = "QCNN",version="0.0.4.2",description="Deep Neural Network module for classification/regression",py_modules=['QCNN'],package_dir = {'':'src'},classifiers = [
+    name = "QCNN",version="1.0.1",description="Deep Neural Network module for classification/regression",py_modules=['QCNN'],package_dir = {'':'src'},classifiers = [
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     'License :: OSI Approved :: MIT License'],
