@@ -6,12 +6,13 @@ import matplotlib.pyplot as plt
 
 
 class NeuralNetwork:
-    def __init__(self, inputnotes,hiddennodes,layers,outputnodes,learningrate,output_type):
+    def __init__(self, inputnotes,hiddennodes,layers,outputnodes,learningrate,number_of_epochs,output_type):
         self.inodes = inputnotes
         self.hnodes = hiddennodes
         self.layers = layers
         self.onodes= outputnodes
         self.lr = learningrate
+        self.epochs = number_of_epochs
         self.individual_epoch_errors = []
         self.mean_errors = []
         self.original_epoch=0
@@ -113,7 +114,24 @@ class NeuralNetwork:
 
         return outputs
 
-    def train(self,inputs,targets,epoch):
+    def clean_data(func):
+        def wrapper(*args, **kwargs):
+
+            self = args[0]
+            data = args[1]
+            for epoch in range(self.epochs):
+                inputs = data[data.columns[:-1]].values
+                outputs = data[data.columns[-1]].values
+                for i in range(len(inputs)):
+                    func(args[0],inputs[i],outputs[i],epoch)
+            plt.plot(self.mean_errors)
+            plt.show()
+            return
+
+        return wrapper
+
+    @clean_data
+    def train(self,inputs,targets="None",epoch = 0):
 
         outputs = self.feed_forward(inputs)
         targets = np.array(targets,ndmin=2).T
