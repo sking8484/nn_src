@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
+"decorated train"
+
 
 class NeuralNetwork:
     def __init__(self, inputnotes,hiddennodes,layers,outputnodes,learningrate,output_type):
